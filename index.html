@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AS CRÔNICAS DE BLACKWOOD | Edição Final & Jogos</title>
+    
+    <!-- FONTES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Rye&family=Sancreek&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Cores do Jornal */
+            --paper: #f0e6d2;
+            --ink: #1a1a1a;
+            --faded: #4a4a4a;
+            --blood: #660000;
+            --sepia-border: #8c7b60;
+            
+            /* Cores do Cassino */
+            --gold-leaf: #d4af37;
+            --felt-green: #2d5a27;
+            --wood-dark: #2b1d12;
+            --ivory: #fdfbf7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #111;
+            font-family: 'Playfair Display', serif;
+            color: var(--ink);
+            overflow-x: hidden;
+            background-image: url("https://www.transparenttextures.com/patterns/dark-wood.png");
+        }
+
+        /* --- CONTAINER PRINCIPAL --- */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #000;
+            box-shadow: 0 0 100px #000;
+        }
+
+        /* --- NAVEGAÇÃO (ABAS) --- */
+        .tab-bar {
+            background: var(--ink);
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            border-bottom: 4px solid var(--gold-leaf);
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 2px solid var(--gold-leaf);
+            color: var(--gold-leaf);
+            padding: 10px 30px;
+            font-family: 'Rye', serif;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--gold-leaf);
+            color: var(--ink);
+        }
+
+        /* --- VISUALIZAÇÃO (VIEWS) --- */
+        .view-section { display: none; animation: fadeIn 0.5s; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* =========================================
+           ESTILO DO JORNAL (HISTÓRIA)
+           ========================================= */
+        .newspaper-theme {
+            background-color: var(--paper);
+            background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+            color: var(--ink);
+            padding-bottom: 60px;
+        }
+
+        .newspaper-theme header.masthead {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 5px solid var(--ink);
+        }
+
+        .meta-header {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Courier Prime', monospace;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--ink);
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        h1.logo {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.5rem, 8vw, 7rem); /* Adjusted clamp for mobile */
+            font-weight: 900;
+            line-height: 0.9;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            margin: 10px 0;
+        }
+
+        .motto { font-style: italic; font-size: 1.2rem; }
+
+        /* Navegação interna do jornal */
+        nav.newspaper-nav {
+            background: #222;
+            color: var(--paper);
+            padding: 10px;
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        nav.newspaper-nav a {
+            color: var(--paper);
+            text-decoration: none;
+            font-family: 'Courier Prime';
+            text-transform: uppercase;
+            margin: 0 5px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        nav.newspaper-nav a:hover { color: var(--gold-leaf); }
+
+        /* Conteúdo do Jornal */
+        .main-headline { font-size: 4.5rem; font-weight: 900; line-height: 1; margin: 40px 0 20px 0; text-align: center; text-transform: uppercase; }
+        .deck { font-size: 1.8rem; text-align: center; font-style: italic; margin-bottom: 40px; color: var(--faded); }
+        .columns-3 { column-count: 3; column-gap: 40px; text-align: justify; font-size: 1.1rem; padding: 0 40px; }
+        .drop-cap { float: left; font-size: 4rem; line-height: 0.8; padding-right: 10px; font-family: 'Cinzel'; font-weight: bold; }
+        .etching { width: 100%; filter: sepia(100%) contrast(1.2); border: 1px solid #000; margin-bottom: 10px; mix-blend-mode: multiply; }
+        
+        hr.double { border: 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); height: 4px; margin: 20px 0; }
+        hr.thick { border: 0; border-top: 4px solid var(--ink); margin: 30px 0; }
+
+        /* Seções Específicas do Jornal */
+        .section-header { text-align: center; font-family: 'Rye'; margin-bottom: 30px; text-transform: uppercase; font-size: 2.5rem; }
+        
+        /* Armazém */
+        .catalog-container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 0 40px; }
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
+        .catalog-item { border: 1px solid var(--ink); padding: 15px; text-align: center; background: #fff; }
+        .catalog-item i { font-size: 2rem; margin-bottom: 10px; color: #333; }
+        .price { font-family: 'Courier Prime'; font-weight: bold; display: block; margin-top: 5px; font-size: 0.9rem; }
+
+        /* Procurados */
+        .wanted-section { background: #3b271d; background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png'); padding: 60px 40px; }
+        .wanted-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
+        .poster { background: #dcd0b8; width: 200px; padding: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); font-family: 'Rye'; text-align: center; transform: rotate(var(--rot)); transition: transform 0.2s; }
+        .poster:hover { transform: scale(1.1) rotate(0deg); z-index: 10; }
+        /* Estilo da imagem do bandido */
+        .mugshot { width: 100%; height: 140px; object-fit: cover; filter: sepia(100%) contrast(1.2) grayscale(0.2); border: 2px solid #222; margin: 10px 0; }
+        
+        /* Mapa e Telégrafo */
+        .interactive-zone { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--ink); }
+        .map-box, .telegraph-box { padding: 40px; border-right: 1px solid var(--ink); }
+        .telegraph-box { background: #e3dac9; border-right: none; }
+        
+        .map-container { position: relative; width: 100%; height: 350px; background-color: #dcd0b8; border: 4px solid #1a1a1a; background-image: radial-gradient(#aaa 1px, transparent 1px); background-size: 20px 20px; }
+        .map-icon { position: absolute; font-size: 1.5rem; color: #1a1a1a; transform: translate(-50%, -50%); cursor: help; }
+        .map-icon:hover { color: var(--blood); transform: translate(-50%, -50%) scale(1.2); }
+        .map-label { font-family: 'Courier Prime'; font-size: 0.7rem; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: #fff; padding: 2px; border: 1px solid #000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .map-icon:hover .map-label { opacity: 1; }
+
+        /* Entrevista */
+        .interview-container { display: flex; gap: 40px; align-items: flex-start; }
+        .interview-image { width: 250px; }
+
+        /* Lápides */
+        .cemetery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; padding: 40px; background: #222; color: #aaa; }
+        .tombstone {
+            background: #444;
+            height: 250px;
+            border-radius: 100px 100px 0 0; /* Forma de lápide */
+            border: 5px solid #333;
+            border-bottom: 20px solid #222;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            font-family: 'Cinzel', serif;
+            position: relative;
+            cursor: crosshair;
+            transition: background 0.3s;
+        }
+        .tombstone:hover { background: #3a3a3a; }
+        .rip-text { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; border-bottom: 2px solid #555; }
+        .dates { font-family: 'Courier Prime'; font-size: 0.9rem; margin-bottom: 10px; }
+        .cause-of-death {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            color: var(--blood); /* Vermelho sangue */
+            display: flex; justify-content: center; align-items: center;
+            border-radius: 95px 95px 0 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: bold;
+            font-family: 'Rye';
+            padding: 20px;
+            font-size: 1.2rem;
+        }
+        .tombstone:hover .cause-of-death { opacity: 1; }
+
+        /* =========================================
+           ESTILO DO CASSINO (JOGOS)
+           ========================================= */
+        .casino-theme {
+            background-color: var(--wood-dark);
+            color: var(--ivory);
+            padding: 40px;
+        }
+
+        .casino-header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid var(--gold-leaf); }
+        .casino-header h1 { font-family: 'Rye'; font-size: 4rem; color: var(--gold-leaf); text-shadow: 3px 3px 0 #000; }
+
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        
+        .game-card {
+            background: #1a100a;
+            border: 4px solid var(--gold-leaf);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
+            position: relative;
+        }
+        
+        .game-title { font-family: 'Rye'; font-size: 1.8rem; color: var(--gold-leaf); text-align: center; border-bottom: 2px solid #5c4d28; padding-bottom: 10px; margin-bottom: 20px; }
+        .game-content { background: var(--felt-green); padding: 20px; border-radius: 10px; border: 5px solid #1a100a; text-align: center; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+        /* Botões de Ação */
+        .btn-action { background: linear-gradient(to bottom, #d4af37, #8a7328); border: 2px solid #fff; color: #2e0202; padding: 8px 16px; font-family: 'Rye'; cursor: pointer; margin: 5px; text-transform: uppercase; box-shadow: 0 4px 0 #4a3b2a; }
+        .btn-action:active { transform: translateY(4px); box-shadow: 0 0 0; }
+        
+        /* Elementos Específicos dos Jogos */
+        .card-ui { width: 50px; height: 75px; background: #fff; color: #000; border-radius: 3px; display: flex; justify-content: center; align-items: center; font-family: 'Courier Prime'; font-size: 1.2rem; font-weight: bold; }
+        .card-ui.red { color: #d00; }
+        .bj-hand { display: flex; gap: 5px; margin-bottom: 10px; }
+        
+        .slot-machine { display: flex; gap: 5px; background: #333; padding: 10px; border: 2px solid gold; margin-bottom: 10px; }
+        .slot-reel { width: 50px; height: 60px; background: #fff; color: #000; font-size: 2rem; display: flex; justify-content: center; align-items: center; }
+        
+        .shells-container { display: flex; gap: 15px; height: 60px; align-items: flex-end; }
+        .shell { width: 50px; height: 40px; background: #8a0b0b; border-radius: 50% 50% 0 0; cursor: pointer; border: 2px solid #d4af37; position: relative; }
+        .ball { width: 15px; height: 15px; background: #fff; border-radius: 50%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: none; }
+        
+        .dice-container { display: flex; gap: 15px; margin-bottom: 10px; }
+        .die { width: 40px; height: 40px; background: #fff; color: #000; border-radius: 5px; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; }
+        
+        .track-lane { width: 100%; border-bottom: 1px dashed #fff; position: relative; height: 30px; margin-bottom: 5px; }
+        .horse-icon { position: absolute; left: 0; font-size: 1.2rem; transition: left 0.1s linear; color: white; }
+
+        .target-stage { width: 100%; height: 120px; background: #000; position: relative; overflow: hidden; border: 2px solid #555; cursor: crosshair; }
+        .target { position: absolute; width: 25px; height: 25px; background: red; border-radius: 50%; border: 2px solid white; bottom: -30px; transition: bottom 0.2s; }
+
+        /* Rodapé */
+        footer { background: var(--ink); color: #fff; padding: 40px; text-align: center; font-family: 'Courier Prime'; }
+        
+        /* Tinta */
+        .ink-blot { position: absolute; background-color: rgba(20, 20, 20, 0.8); border-radius: 50%; pointer-events: none; filter: blur(1px); mix-blend-mode: multiply; animation: spread 1s forwards; z-index: 100; }
+        @keyframes spread { from { transform: scale(0); opacity: 1; } to { transform: scale(1); opacity: 0.7; } }
+
+        /* -----------------------------------------------------------
+           RESPONSIVIDADE (MEDIA QUERIES)
+           ----------------------------------------------------------- */
+        
+        /* Tablet & Laptops Menores (max-width: 1024px) */
+        @media (max-width: 1024px) {
+            .columns-3 { column-count: 2; padding: 0 20px; }
+            .catalog-container { grid-template-columns: 1fr; padding: 0 20px; }
+            .interactive-zone { grid-template-columns: 1fr; }
+            .map-box { border-right: none; border-bottom: 1px solid var(--ink); padding: 20px; }
+            .telegraph-box { padding: 20px; }
+            .main-headline { font-size: 3.5rem; }
+        }
+
+        /* Mobile (max-width: 768px) */
+        @media (max-width: 768px) {
+            /* Jornal */
+            .columns-3 { column-count: 1; padding: 0 20px; }
+            .meta-header { flex-direction: column; gap: 10px; }
+            .interview-container { flex-direction: column; align-items: center; }
+            .interview-image { width: 100%; max-width: 400px; margin-bottom: 20px; }
+            
+            h1.logo { margin: 20px 0; }
+            .main-headline { font-size: 2.5rem; margin: 20px 0; }
+            .deck { font-size: 1.2rem; margin-bottom: 20px; }
+            .drop-cap { font-size: 3rem; }
+            
+            section { padding: 30px 15px !important; }
+            .wanted-section { padding: 30px 15px; }
+            
+            /* Cassino */
+            .casino-header h1 { font-size: 2.5rem; }
+            .games-grid { grid-template-columns: 1fr; }
+            
+            /* UI Elements */
+            .tab-btn { padding: 8px 15px; font-size: 0.9rem; }
+            .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+            
+            /* Map Height */
+            .map-container { height: 250px; }
+        }
+
+        /* Mobile Pequeno (max-width: 480px) */
+        @media (max-width: 480px) {
+            .catalog-grid { grid-template-columns: 1fr; }
+            .cemetery-grid { grid-template-columns: 1fr; }
+            .tab-bar { flex-direction: column; gap: 10px; }
+            .slot-reel { width: 40px; font-size: 1.5rem; }
+        }
+
+    </style>
+</head>
+<body onclick="dropInk(event)">
+
+    <div class="main-container">
+        
+        <!-- NAVEGAÇÃO -->
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('newspaper')"><i class="fa-solid fa-newspaper"></i> O Jornal</button>
+            <button class="tab-btn" onclick="switchTab('games')"><i class="fa-solid fa-dice"></i> Saloon de Jogos</button>
+        </div>
+
+        <!-- ==============================================
+             ABA 1: O JORNAL (HISTÓRIA COMPLETA)
+             ============================================== -->
+        <div id="newspaper-view" class="view-section newspaper-theme active">
+            
+            <header class="masthead">
+                <div class="meta-header">
+                    <span>Território do Novo México</span>
+                    <span>Edição Final</span>
+                    <span>12 de Agosto de 1899</span>
+                </div>
+                <h1 class="logo">As Crônicas de Blackwood</h1>
+                <div class="motto">"A Verdade, Mesmo Que Sangre."</div>
+                <nav class="newspaper-nav">
+                    <a href="#cover">A Queda</a> |
+                    <a href="#interview">Testemunhas</a> |
+                    <a href="#map">Mapa</a> |
+                    <a href="#catalog">Mercadorias</a> |
+                    <a href="#wanted">Procurados</a> |
+                    <a href="#obituary">Cemitério</a>
+                </nav>
+            </header>
+
+            <!-- 1. CAPA -->
+            <section id="cover" style="padding: 20px 40px;">
+                <h2 class="main-headline">O FIM DE UMA ERA: CIDADE EM CHAMAS</h2>
+                <p class="deck">Gangue "Mão Morta" saqueia o Banco Federal e incendeia a Rua Principal. O caos reina na fronteira.</p>
+                
+                <img src="images/cidade.png" class="etching" style="height: 400px; object-fit: cover;" alt="Cidade em chamas">
+                <p style="text-align: center; font-style: italic; font-size: 0.8rem; margin-bottom: 20px;">Fig 1. Escombros do Banco de Blackwood após o ataque da artilharia bandida.</p>
+                
+                <hr class="thick">
+                
+                <div class="columns-3">
+                    <p><span class="drop-cap">E</span>ra para ser um domingo de orações. Em vez disso, foi um domingo de sangue e pólvora. A cidade de Blackwood, outrora a promessa dourada do oeste, amanheceu hoje reduzida a uma carcaça fumegante de cinzas e madeira chamuscada. O ataque, coordenado com precisão militar, começou pontualmente ao meio-dia, quando os sinos da igreja soaram, cruelmente abafados pelo som ensurdecedor de dinamite explodindo a porta blindada do cofre do Banco Nacional.</p>
+                    
+                    <p>O bando conhecido como "Mão Morta", liderado pelo infame desertor confederado Silas "O Cão" Vane, desceu das colinas áridas como uma praga bíblica. Testemunhas afirmam que eram mais de trinta homens montados. Não houve pedido de rendição, não houve negociação. O respeitado Xerife John Miller, um homem que dedicou os últimos 20 anos a trazer a civilização para este fim de mundo, foi covardemente abatido nos degraus de seu próprio escritório antes mesmo de conseguir destravar sua Colt Navy.</p>
+                    
+                    <p>O tiroteio durou horas. Cidadãos comuns, armados apenas com espingardas de caça e coragem desesperada, tentaram defender suas casas. Foi em vão. Os bandidos incendiaram o Saloon, o Armazém e a Escola. O prejuízo financeiro é incalculável; estima-se que $50.000 em barras de ouro do governo federal, destinados ao pagamento das tropas do Forte Wallace, foram levados. Mas o custo humano é a verdadeira tragédia irremediável.</p>
+
+                    <p>Enquanto a fumaça se dissipa, a realidade se assenta. O prefeito fugiu na primeira diligência disfarçado de mulher, segundo boatos. O padre está desaparecido. Blackwood, senhoras e senhores, morreu ontem à noite. O que resta agora são abutres circulando no céu e o silêncio pesado de quem perdeu tudo.</p>
+                </div>
+            </section>
+
+            <!-- 2. ENTREVISTA -->
+            <section id="interview" style="background: #fdfbf7; padding: 60px 40px; border-top: 1px solid var(--ink);">
+                <h2 class="section-header">DEPOIMENTO: O ÚLTIMO SOBREVIVENTE</h2>
+                <div class="interview-container">
+                    <img src="images/homem.png" class="etching interview-image" alt="Mineiro velho">
+                    <div>
+                        <blockquote style="font-family: 'Rye'; font-size: 1.4rem; margin-bottom: 20px; border-left: 5px solid var(--ink); padding-left: 20px;">"Eu vi o diabo em pessoa. Ele não tinha chifres, ele usava esporas de prata e um casaco azul."</blockquote>
+                        
+                        <p><strong>Gazette:</strong> Sr. O'Malley, o senhor estava na rua principal quando o ataque começou. Descreva o que viu.</p>
+                        <p><strong>O'Malley:</strong> Eu estava na cadeira do barbeiro. A navalha estava no meu pescoço quando a primeira explosão aconteceu. O barbeiro tremeu tanto que quase me degolou ali mesmo. Olhei pela janela e vi poeira e cavalos pretos.</p>
+                        <br>
+                        <p><strong>Gazette:</strong> O senhor viu o líder, Silas Vane?</p>
+                        <p><strong>O'Malley:</strong> Vi. E nunca vou esquecer. Ele desceu do cavalo enquanto seus homens atiravam nas vidraças. Ele caminhou até o corpo do Xerife, acendeu um charuto e riu. Ele ria enquanto a igreja queimava! Aquele homem não tem alma, ele é vazio por dentro.</p>
+                        <br>
+                        <p><strong>Gazette:</strong> O que o senhor fará agora? A cidade acabou.</p>
+                        <p><strong>O'Malley:</strong> Pegar minha mula e ir para o norte. Deus abandonou este lugar, rapaz. E eu sugiro que você faça o mesmo antes que eles voltem para pegar os dentes de ouro dos mortos.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. MAPA & TELÉGRAFO -->
+            <section class="interactive-zone" id="map">
+                <div class="map-box">
+                    <h3 class="section-header" style="font-size: 2rem;">MAPEAMENTO URBANO</h3>
+                    <div class="map-container">
+                        <!-- Pontos -->
+                        <div class="map-icon" style="top: 50%; left: 50%;">
+                            <i class="fa-solid fa-star"></i>
+                            <div class="map-label">PRAÇA CENTRAL</div>
+                        </div>
+                        
+                        <div class="map-icon" style="top: 20%; left: 20%;">
+                            <i class="fa-solid fa-martini-glass"></i>
+                            <div class="map-label">SALOON VELVET</div>
+                        </div>
+
+                        <div class="map-icon" style="top: 20%; left: 80%;">
+                            <i class="fa-solid fa-landmark"></i>
+                            <div class="map-label">BANCO NACIONAL</div>
+                        </div>
+
+                        <div class="map-icon" style="bottom: 20%; left: 30%;">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <div class="map-label">DELEGACIA & CADEIA</div>
+                        </div>
+
+                        <div class="map-icon" style="bottom: 30%; right: 20%;">
+                            <i class="fa-solid fa-beer-mug-empty"></i>
+                            <div class="map-label">BAR DO BILL</div>
+                        </div>
+
+                        <svg width="100%" height="100%" style="position: absolute; top:0; left:0; pointer-events: none;"><path d="M 0 175 Q 300 50 600 175 T 1200 175" stroke="#333" stroke-width="2" fill="none" stroke-dasharray="10,5"/></svg>
+                    </div>
+                    <p style="text-align: center; margin-top: 10px; font-size: 0.8rem;">Levantamento topográfico realizado antes do incêndio.</p>
+                </div>
+
+                <div class="telegraph-box">
+                    <h3 class="section-header" style="font-size: 2rem; color: #5c4d28;">ESTAÇÃO TELEGRÁFICA</h3>
+                    <p style="text-align: center; margin-bottom: 20px; font-family: 'Courier Prime'; font-size: 0.8rem;">TRANSMISSOR DE FITA WESTERN UNION MODELO 1888</p>
+                    
+                    <!-- Simulação de fita de papel saindo -->
+                    <div style="background: #e3dac9; border-left: 10px solid #b0a080; border-right: 10px solid #b0a080; padding: 20px; box-shadow: inset 0 0 20px rgba(0,0,0,0.2);">
+                        <div id="telegraph-strip" style="height: 100px; background: #fdfbf7; border: 1px solid #ccc; padding: 15px; overflow-x: auto; white-space: nowrap; font-family: 'Courier Prime'; color: #000; font-weight: bold; font-size: 1.2rem; box-shadow: 0 5px 5px rgba(0,0,0,0.1);">
+                            SYSTEM READY.
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px; text-align: center;">
+                        <input type="text" id="telegram-input" placeholder="MENSAGEM..." style="width: 80%; padding: 10px; background: #fff; border: 2px solid #5c4d28; font-family: 'Courier Prime'; text-transform: uppercase;">
+                        <br>
+                        <button onclick="sendTelegram()" style="margin-top: 15px; padding: 10px 30px; background: #b8860b; color: #fff; border: none; font-family: 'Rye'; cursor: pointer; box-shadow: 0 4px 0 #8b6508;">TRANSMITIR</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. ARMAZÉM & ARMEIRO -->
+            <section id="catalog" style="background-color: #e8ded1; padding: 60px 40px;">
+                <h2 class="section-header">CATÁLOGO DE VENDAS</h2>
+                
+                <div class="catalog-container">
+                    <!-- Secos e Molhados -->
+                    <div>
+                        <h3 style="font-family: 'Cinzel'; text-align: center; border-bottom: 2px solid var(--ink); margin-bottom: 20px;">ARMAZÉM GERAL</h3>
+                        <div class="catalog-grid">
+                            <div class="catalog-item"><i class="fa-solid fa-jar"></i><h4>Feijão (Lata)</h4><span class="price">$0.10</span></div>
+                            <div class="catalog-item"><i class="fa-solid fa-bottle-droplet"></i><h4>Uísque "Cobra"</h4><span class="price">$2.00</span></div>
+                            <div class="catalog-item"><i class="fa-solid fa-bread-slice"></i><h4>Pão Duro</h4><span class="price">$0.05</span></div>
+                            <div class="catalog-item"><i class="fa-solid fa-shirt"></i><h4>Camisa Linho</h4><span class="price">$1.50</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Armas -->
+                    <div>
+                        <h3 style="font-family: 'Cinzel'; text-align: center; border-bottom: 2px solid var(--ink); margin-bottom: 20px;">ARMEIRO LICENCIADO</h3>
+                        <div class="catalog-grid">
+                            <div class="catalog-item"><i class="fa-solid fa-gun"></i><h4>Colt Navy .36</h4><span class="price">$18.00</span></div>
+                            <div class="catalog-item"><i class="fa-solid fa-person-rifle"></i><h4>Winchester 73</h4><span class="price">$25.00</span></div>
+                            <div class="catalog-item"><i class="fa-solid fa-bomb"></i><h4>Dinamite (un)</h4><span class="price">$5.00</span></div>
+                            <div class="catalog-item"><i class="fa-solid fa-utensils"></i><h4>Faca Bowie</h4><span class="price">$3.00</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. PROCURADOS (8 CARTAZES) -->
+            <section id="wanted" class="wanted-section">
+                <h2 class="section-header" style="color: #dcd0b8;">PROCURA-SE VIVO OU MORTO</h2>
+                <div class="wanted-grid">
+                    <!-- Cartaz 1 -->
+                    <div class="poster" style="--rot: -2deg;">
+                        <h3>WANTED</h3>
+                        <img src="images/lider.png" class="mugshot" alt="Silas Vane">
+                        <p>SILAS VANE</p>
+                        <h4 style="color: var(--blood); margin-top: 5px;">$5,000</h4>
+                    </div>
+                    <!-- Cartaz 2 -->
+                    <div class="poster" style="--rot: 2deg;">
+                        <h3>WANTED</h3>
+                        <img src="images/capanga1.png" class="mugshot" alt="Jack Caolho">
+                        <p>JACK CAOLHO</p>
+                        <h4 style="color: var(--blood); margin-top: 5px;">$500</h4>
+                    </div>
+                    <!-- Cartaz 3 -->
+                    <div class="poster" style="--rot: -1deg;">
+                        <h3>WANTED</h3>
+                        <img src="images/capanga2.png" class="mugshot" alt="O Banqueiro">
+                        <p>O BANQUEIRO</p>
+                        <h4 style="color: var(--blood); margin-top: 5px;">$1,000</h4>
+                    </div>
+                    <!-- Cartaz 4 -->
+                    <div class="poster" style="--rot: 3deg;">
+                        <h3>WANTED</h3>
+                        <img src="images/capanga3.png" class="mugshot" alt="Kid Rápido">
+                        <p>KID RÁPIDO</p>
+                        <h4 style="color: var(--blood); margin-top: 5px;">$800</h4>
+                    </div>
+                    <!-- Cartaz 5 -->
+                    <div class="poster" style="--rot: -3deg;">
+                        <h3>WANTED</h3>
+                        <img src="images/capanga4.png" class="mugshot" alt="Billy Manco">
+                        <p>BILLY MANCO</p>
+                        <h4 style="color: var(--blood); margin-top: 5px;">$100</h4>
+                    </div>
+                    <!-- Cartaz 6 -->
+                    <div class="poster" style="--rot: 1deg;">
+                        <h3>WANTED</h3>
+                        <img src="images/capanga5.png" class="mugshot" alt="Big Joe">
+                        <p>BIG JOE</p>
+                        <h4 style="color: var(--blood); margin-top: 5px;">$300</h4>
+                    </div>
+                    <!-- Cartaz 7 -->
+                    <div class="poster" style="--rot: -2deg;">
+                        <h3>WANTED</h3>
+                        <img src="images/capanga6.png" class="mugshot" alt="Viúva Negra">
+                        <p>VIÚVA NEGRA</p>
+                        <h4 style="color: var(--blood); margin-top: 5px;">$2,000</h4>
+                    </div>
+                    <!-- Cartaz 8 -->
+                    <div class="poster" style="--rot: 2deg;">
+                        <h3>WANTED</h3>
+                        <img src="images/capanga7.png" class="mugshot" class="mugshot" alt="Davi Isidoro">
+                        <p>DAVI ISIDORO</p>
+                        <h4 style="color: var(--blood); margin-top: 5px;">$3.50</h4>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. OBITUÁRIO (LÁPIDES) -->
+            <section id="obituary" style="background: #111; color: #888; padding: 60px 40px;">
+                <h2 class="section-header" style="color: #fff;">CEMITÉRIO DE BLACKWOOD</h2>
+                <div class="cemetery-grid">
+                    
+                    <div class="tombstone">
+                        <div class="cause-of-death">TIRO NO PEITO</div>
+                        <div class="rip-text">R.I.P</div>
+                        <h3 style="color: #fff;">JOHN MILLER</h3>
+                        <div class="dates">1854 - 1899</div>
+                    </div>
+
+                    <div class="tombstone">
+                        <div class="cause-of-death">ENFORCADO</div>
+                        <div class="rip-text">R.I.P</div>
+                        <h3 style="color: #fff;">JACK VANE</h3>
+                        <div class="dates">1860 - 1899</div>
+                    </div>
+
+                    <div class="tombstone">
+                        <div class="cause-of-death">CÓLERA</div>
+                        <div class="rip-text">R.I.P</div>
+                        <h3 style="color: #fff;">MARY SUE</h3>
+                        <div class="dates">1870 - 1898</div>
+                    </div>
+
+                    <div class="tombstone">
+                        <div class="cause-of-death">COICE DE MULA</div>
+                        <div class="rip-text">R.I.P</div>
+                        <h3 style="color: #fff;">PETE VELHO</h3>
+                        <div class="dates">1830 - 1899</div>
+                    </div>
+
+                    <div class="tombstone">
+                        <div class="cause-of-death">INALOU FUMAÇA</div>
+                        <div class="rip-text">R.I.P</div>
+                        <h3 style="color: #fff;">MISS KITTY</h3>
+                        <div class="dates">1875 - 1899</div>
+                    </div>
+
+                    <div class="tombstone">
+                        <div class="cause-of-death">QUEDA DE CAVALO</div>
+                        <div class="rip-text">R.I.P</div>
+                        <h3 style="color: #fff;">BILL SMITH</h3>
+                        <div class="dates">1845 - 1890</div>
+                    </div>
+
+                    <div class="tombstone">
+                        <div class="cause-of-death">DUELO PERDIDO</div>
+                        <div class="rip-text">R.I.P</div>
+                        <h3 style="color: #fff;">KID AZARADO</h3>
+                        <div class="dates">1880 - 1899</div>
+                    </div>
+
+                    <div class="tombstone">
+                        <div class="cause-of-death">BEBIDA ADULTERADA</div>
+                        <div class="rip-text">R.I.P</div>
+                        <h3 style="color: #fff;">DOC BROWN</h3>
+                        <div class="dates">1850 - 1899</div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- ==============================================
+             ABA 2: O CASSINO (10 JOGOS)
+             ============================================== -->
+        <div id="games-view" class="view-section casino-theme">
+            
+            <header class="casino-header">
+                <h1>Saloon de Jogos</h1>
+                <p style="font-family: 'Courier Prime'; color: #ccc;">"A sorte favorece os audazes."</p>
+            </header>
+
+            <div class="games-grid">
+                
+                <!-- 1. BLACKJACK -->
+                <div class="game-card">
+                    <div class="game-title">♦ Blackjack ♦</div>
+                    <div class="game-content">
+                        <div style="font-size: 0.8rem;">MESA</div>
+                        <div class="bj-hand" id="dealer-hand"><div class="card-ui">?</div></div>
+                        <div class="game-result" id="bj-msg">Aposte</div>
+                        <div class="bj-hand" id="player-hand"><div class="card-ui">?</div></div>
+                        <div style="font-size: 0.8rem;">VOCÊ</div>
+                        <div style="margin-top: 10px;">
+                            <button class="btn-action" onclick="bjHit()">Carta</button>
+                            <button class="btn-action" onclick="bjStand()">Parar</button>
+                            <button class="btn-action" onclick="bjReset()"><i class="fa-solid fa-rotate"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. SLOTS (ICONS) -->
+                <div class="game-card">
+                    <div class="game-title"><i class="fa-solid fa-gem"></i> Slots <i class="fa-solid fa-gem"></i></div>
+                    <div class="game-content">
+                        <div class="slot-machine">
+                            <div class="slot-reel" id="reel1"><i class="fa-solid fa-star"></i></div>
+                            <div class="slot-reel" id="reel2"><i class="fa-solid fa-bell"></i></div>
+                            <div class="slot-reel" id="reel3"><i class="fa-solid fa-anchor"></i></div>
+                        </div>
+                        <div class="game-result" id="slot-msg">Gire!</div>
+                        <button class="btn-action" onclick="spinSlots()">GIRAR ($1)</button>
+                    </div>
+                </div>
+
+                <!-- 3. TIRO -->
+                <div class="game-card">
+                    <div class="game-title"><i class="fa-solid fa-crosshairs"></i> Tiro <i class="fa-solid fa-crosshairs"></i></div>
+                    <div class="game-content" style="display:block; padding:0;">
+                        <div style="padding:10px; background:#222;">Pts: <span id="shoot-score">0</span></div>
+                        <div class="target-stage" id="shoot-stage" onclick="shootTarget(event)"></div>
+                        <button class="btn-action" style="width:100%; border:none;" onclick="startShooting()">INICIAR</button>
+                    </div>
+                </div>
+
+                <!-- 4. COPOS -->
+                <div class="game-card">
+                    <div class="game-title"><i class="fa-solid fa-whiskey-glass"></i> Copos <i class="fa-solid fa-whiskey-glass"></i></div>
+                    <div class="game-content">
+                        <div class="shells-container">
+                            <div class="shell" onclick="checkShell(0)"><div class="ball" id="ball0"></div></div>
+                            <div class="shell" onclick="checkShell(1)"><div class="ball" id="ball1"></div></div>
+                            <div class="shell" onclick="checkShell(2)"><div class="ball" id="ball2"></div></div>
+                        </div>
+                        <div class="game-result" id="shell-msg">Onde está?</div>
+                        <button class="btn-action" onclick="startShellGame()">Embaralhar</button>
+                    </div>
+                </div>
+
+                <!-- 5. DADOS -->
+                <div class="game-card">
+                    <div class="game-title"><i class="fa-solid fa-dice"></i> Dados <i class="fa-solid fa-dice"></i></div>
+                    <div class="game-content">
+                        <div class="dice-container">
+                            <div class="die" id="die1">1</div>
+                            <div class="die" id="die2">1</div>
+                        </div>
+                        <div class="game-result" id="dice-msg">7 ou 11</div>
+                        <button class="btn-action" onclick="rollDice()">Jogar</button>
+                    </div>
+                </div>
+
+                <!-- 6. CORRIDA (ICON) -->
+                <div class="game-card">
+                    <div class="game-title"><i class="fa-solid fa-horse-head"></i> Derby <i class="fa-solid fa-horse-head"></i></div>
+                    <div class="game-content" style="display:block;">
+                        <div class="track-lane"><div class="horse-icon" id="h1"><i class="fa-solid fa-horse"></i> 1</div></div>
+                        <div class="track-lane"><div class="horse-icon" id="h2"><i class="fa-solid fa-horse"></i> 2</div></div>
+                        <div class="track-lane"><div class="horse-icon" id="h3"><i class="fa-solid fa-horse"></i> 3</div></div>
+                        <div class="game-result" id="race-msg" style="text-align:center;">Aposte:</div>
+                        <div style="text-align:center;">
+                            <button class="btn-action" onclick="startRace(1)">#1</button>
+                            <button class="btn-action" onclick="startRace(2)">#2</button>
+                            <button class="btn-action" onclick="startRace(3)">#3</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. ROLETA (NOVO) -->
+                <div class="game-card">
+                    <div class="game-title"><i class="fa-solid fa-circle-dot"></i> Roleta <i class="fa-solid fa-circle-dot"></i></div>
+                    <div class="game-content">
+                        <div id="roulette-wheel" style="font-size: 3rem; margin-bottom: 20px;">🎲</div>
+                        <div class="game-result" id="roulette-msg">Aposte</div>
+                        <div>
+                            <button class="btn-action" style="background: red; color:white;" onclick="spinRoulette('red')">Vermelho</button>
+                            <button class="btn-action" style="background: black; color:white;" onclick="spinRoulette('black')">Preto</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. HIGH LOW (NOVO) -->
+                <div class="game-card">
+                    <div class="game-title"><i class="fa-solid fa-arrow-up-right-dots"></i> Maior/Menor <i class="fa-solid fa-arrow-down-left-dots"></i></div>
+                    <div class="game-content">
+                        <div id="hl-card" class="card-ui">7</div>
+                        <div class="game-result" id="hl-msg">Próxima é maior?</div>
+                        <div>
+                            <button class="btn-action" onclick="playHighLow('high')"><i class="fa-solid fa-arrow-up"></i> Maior</button>
+                            <button class="btn-action" onclick="playHighLow('low')"><i class="fa-solid fa-arrow-down"></i> Menor</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9. CARA OU COROA (NOVO) -->
+                <div class="game-card">
+                    <div class="game-title"><i class="fa-solid fa-coins"></i> Moeda <i class="fa-solid fa-coins"></i></div>
+                    <div class="game-content">
+                        <div id="coin-visual" style="width: 60px; height: 60px; background: gold; border-radius: 50%; display:flex; justify-content:center; align-items:center; color: #222; font-weight: bold; font-size: 1.5rem; border: 4px solid orange; box-shadow: 0 4px 0 #b8860b;">$</div>
+                        <div class="game-result" id="coin-msg">Jogue</div>
+                        <button class="btn-action" onclick="flipCoin()">Jogar Moeda</button>
+                    </div>
+                </div>
+
+                <!-- 10. PEDRA PAPEL TESOURA (DUELO DE MÃOS) (NOVO) -->
+                <div class="game-card">
+                    <div class="game-title"><i class="fa-solid fa-hand-fist"></i> Duelo <i class="fa-solid fa-hand-fist"></i></div>
+                    <div class="game-content">
+                        <div style="font-size: 2rem; margin-bottom: 10px;" id="rps-visual"><i class="fa-solid fa-question"></i> VS <i class="fa-solid fa-question"></i></div>
+                        <div class="game-result" id="rps-msg">Escolha</div>
+                        <div>
+                            <button class="btn-action" onclick="playRPS('rock')"><i class="fa-solid fa-hand-back-fist"></i></button>
+                            <button class="btn-action" onclick="playRPS('paper')"><i class="fa-solid fa-hand"></i></button>
+                            <button class="btn-action" onclick="playRPS('scissors')"><i class="fa-solid fa-hand-scissors"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer>
+            <p>"A História é escrita pelos sobreviventes."</p>
+            <p>As Crônicas de Blackwood © 1899</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- NAVEGAÇÃO ---
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+
+            if(tabName === 'newspaper') {
+                document.querySelector('button[onclick="switchTab(\'newspaper\')"]').classList.add('active');
+                document.getElementById('newspaper-view').classList.add('active');
+            } else {
+                document.querySelector('button[onclick="switchTab(\'games\')"]').classList.add('active');
+                document.getElementById('games-view').classList.add('active');
+            }
+        }
+
+        // --- TELÉGRAFO (MODIFICADO - TELEGRAM STYLE) ---
+        function sendTelegram() {
+            const input = document.getElementById('telegram-input');
+            const tape = document.getElementById('telegraph-strip');
+            const text = input.value.toUpperCase();
+            if(!text) return;
+            
+            // Adiciona STOP no final
+            const processedText = text + " STOP ";
+            
+            // Adiciona à fita simulada
+            tape.innerText = tape.innerText + "   " + processedText;
+            tape.scrollLeft = tape.scrollWidth; // Auto scroll
+            input.value = "";
+        }
+
+        // --- BLACKJACK ---
+        let bjDeck=[], bjPlayer=[], bjDealer=[], bjActive=false;
+        const suits=['♠','♥','♦','♣'], vals=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+        
+        function bjReset() {
+            bjDeck=[]; for(let s of suits) for(let v of vals) bjDeck.push({s,v});
+            bjDeck.sort(()=>Math.random()-0.5);
+            bjPlayer=[bjDeck.pop(),bjDeck.pop()]; bjDealer=[bjDeck.pop()]; bjActive=true;
+            updateBJ("Faça sua jogada");
+        }
+        function bjHit(){ if(!bjActive)return; bjPlayer.push(bjDeck.pop()); if(getScore(bjPlayer)>21){updateBJ("ESTOUROU! (Bust)"); bjActive=false;}else updateBJ("Sua vez"); }
+        function bjStand(){ if(!bjActive)return; while(getScore(bjDealer)<17)bjDealer.push(bjDeck.pop()); 
+            let p=getScore(bjPlayer), d=getScore(bjDealer);
+            if(d>21||p>d) updateBJ("VOCÊ VENCEU!"); else if(d>p) updateBJ("CASA VENCE."); else updateBJ("EMPATE.");
+            bjActive=false;
+        }
+        function getScore(h){ let s=0,a=0; for(let c of h){if(['J','Q','K'].includes(c.v))s+=10;else if(c.v==='A'){s+=11;a++}else s+=parseInt(c.v)} while(s>21&&a>0){s-=10;a--} return s;}
+        function updateBJ(m){
+            document.getElementById('bj-msg').innerText=m;
+            const r=(h,id)=>{ document.getElementById(id).innerHTML=h.map(c=>`<div class="card-ui ${(c.s=='♥'||c.s=='♦')?'red':''}">${c.v}${c.s}</div>`).join('') };
+            r(bjPlayer,'player-hand'); r(bjDealer,'dealer-hand');
+        }
+
+        // --- SLOTS (ICONS) ---
+        // Usando FontAwesome icons como strings HTML
+        const syms=['<i class="fa-solid fa-star"></i>', '<i class="fa-solid fa-bell"></i>', '<i class="fa-solid fa-anchor"></i>', '<i class="fa-solid fa-bolt"></i>', '<i class="fa-solid fa-gem"></i>'];
+        function spinSlots(){
+            let i=0; const int=setInterval(()=>{
+                document.getElementById('reel1').innerHTML=syms[Math.floor(Math.random()*5)];
+                document.getElementById('reel2').innerHTML=syms[Math.floor(Math.random()*5)];
+                document.getElementById('reel3').innerHTML=syms[Math.floor(Math.random()*5)];
+                if(++i>10){ clearInterval(int); checkSlotWin(); }
+            },100);
+        }
+        function checkSlotWin(){
+            const r1=document.getElementById('reel1').innerHTML, r2=document.getElementById('reel2').innerHTML, r3=document.getElementById('reel3').innerHTML;
+            if(r1==r2&&r2==r3) document.getElementById('slot-msg').innerText="JACKPOT!";
+            else if(r1==r2||r2==r3||r1==r3) document.getElementById('slot-msg').innerText="Par!";
+            else document.getElementById('slot-msg').innerText="Tente de novo";
+        }
+
+        // --- SHOOTING ---
+        let sScore=0;
+        function startShooting(){
+            sScore=0; document.getElementById('shoot-score').innerText=0;
+            const st=document.getElementById('shoot-stage'); st.innerHTML='';
+            let c=0; const int=setInterval(()=>{ if(c++>8)clearInterval(int);
+                const t=document.createElement('div'); t.className='target'; t.style.left=Math.random()*90+'%';
+                st.appendChild(t); setTimeout(()=>t.style.bottom='10px',100); setTimeout(()=>t.remove(),1000);
+            },800);
+        }
+        function shootTarget(e){ if(e.target.className==='target'){ sScore++; document.getElementById('shoot-score').innerText=sScore; e.target.remove(); } }
+
+        // --- SHELLS ---
+        let winShell=0, shellOn=false;
+        function startShellGame(){
+            shellOn=true; document.getElementById('shell-msg').innerText="Embaralhando...";
+            [0,1,2].forEach(i=>document.getElementById('ball'+i).style.display='none');
+            setTimeout(()=>{ winShell=Math.floor(Math.random()*3); document.getElementById('shell-msg').innerText="Escolha!"; },1000);
+        }
+        function checkShell(i){ if(!shellOn)return; document.getElementById('ball'+winShell).style.display='block';
+            document.getElementById('shell-msg').innerText = (i===winShell)?"VENCEU!":"ERROU!"; shellOn=false; }
+
+        // --- DICE ---
+        function rollDice(){
+            const d1=Math.floor(Math.random()*6)+1, d2=Math.floor(Math.random()*6)+1, s=d1+d2;
+            document.getElementById('die1').innerText=d1; document.getElementById('die2').innerText=d2;
+            document.getElementById('dice-msg').innerText = (s==7||s==11)?"Soma "+s+"! VENCEU!":(s==2||s==3||s==12)?"Soma "+s+"! PERDEU!":"Soma "+s;
+        }
+
+        // --- RACE ---
+        function startRace(b){
+            const h1=document.getElementById('h1'), h2=document.getElementById('h2'), h3=document.getElementById('h3');
+            h1.style.left=0; h2.style.left=0; h3.style.left=0;
+            document.getElementById('race-msg').innerText="Correndo...";
+            let p1=0,p2=0,p3=0; const int=setInterval(()=>{
+                p1+=Math.random()*5; p2+=Math.random()*5; p3+=Math.random()*5;
+                h1.style.left=p1+'%'; h2.style.left=p2+'%'; h3.style.left=p3+'%';
+                if(p1>90||p2>90||p3>90){ clearInterval(int);
+                    let w=1; if(p2>p1&&p2>p3)w=2; if(p3>p1&&p3>p2)w=3;
+                    document.getElementById('race-msg').innerText = (w===b)?"#"+w+" venceu! GANHOU!":"#"+w+" venceu. PERDEU.";
+                }
+            },100);
+        }
+
+        // --- 7. ROULETTE ---
+        function spinRoulette(choice) {
+            const wheel = document.getElementById('roulette-wheel');
+            const msg = document.getElementById('roulette-msg');
+            msg.innerText = "Girando...";
+            let i=0; 
+            const int = setInterval(() => {
+                // Simples red/black toggle visual
+                wheel.style.color = (i%2==0) ? "red" : "black";
+                wheel.innerText = Math.floor(Math.random()*36);
+                if(++i > 15) {
+                    clearInterval(int);
+                    const num = Math.floor(Math.random()*36);
+                    const color = (num % 2 === 0) ? "red" : "black"; // Simplificado: Par=Red, Impar=Black
+                    wheel.innerText = num;
+                    wheel.style.color = color;
+                    if(choice === color) {
+                        msg.innerText = `Caiu ${color} ${num}. VENCEU!`;
+                        msg.style.color = "#4caf50";
+                    } else {
+                        msg.innerText = `Caiu ${color} ${num}. PERDEU.`;
+                        msg.style.color = "red";
+                    }
+                }
+            }, 100);
+        }
+
+        // --- 8. HIGH LOW ---
+        let currentHL = 5;
+        function playHighLow(guess) {
+            const next = Math.floor(Math.random()*13)+1; // 1-13
+            const msg = document.getElementById('hl-msg');
+            const card = document.getElementById('hl-card');
+            
+            card.innerText = next;
+            if( (guess === 'high' && next > currentHL) || (guess === 'low' && next < currentHL) ) {
+                msg.innerText = "Acertou! (Era " + currentHL + ")";
+                msg.style.color = "#4caf50";
+            } else {
+                msg.innerText = "Errou! (Era " + currentHL + ")";
+                msg.style.color = "red";
+            }
+            currentHL = next;
+        }
+
+        // --- 9. COIN FLIP ---
+        function flipCoin() {
+            const coin = document.getElementById('coin-visual');
+            const msg = document.getElementById('coin-msg');
+            msg.innerText = "Girando...";
+            
+            // Animation
+            coin.style.transform = "rotateX(720deg)";
+            coin.style.transition = "transform 1s";
+            
+            setTimeout(() => {
+                const res = Math.random() > 0.5 ? "CARA" : "COROA";
+                coin.innerText = res === "CARA" ? "$" : "C";
+                coin.style.transform = "rotateX(0deg)";
+                msg.innerText = res;
+            }, 1000);
+        }
+
+        // --- 10. ROCK PAPER SCISSORS (DUEL) ---
+        function playRPS(choice) {
+            const options = ['rock', 'paper', 'scissors'];
+            const icons = {'rock': '<i class="fa-solid fa-hand-back-fist"></i>', 'paper': '<i class="fa-solid fa-hand"></i>', 'scissors': '<i class="fa-solid fa-hand-scissors"></i>'};
+            const cpu = options[Math.floor(Math.random()*3)];
+            
+            document.getElementById('rps-visual').innerHTML = `${icons[choice]} VS ${icons[cpu]}`;
+            const msg = document.getElementById('rps-msg');
+            
+            if(choice === cpu) {
+                msg.innerText = "EMPATE";
+                msg.style.color = "white";
+            } else if ( (choice==='rock' && cpu==='scissors') || (choice==='paper' && cpu==='rock') || (choice==='scissors' && cpu==='paper') ) {
+                msg.innerText = "VITÓRIA";
+                msg.style.color = "#4caf50";
+            } else {
+                msg.innerText = "DERROTA";
+                msg.style.color = "red";
+            }
+        }
+
+        // --- INK ---
+        function dropInk(e){ if(e.target.tagName==='INPUT'||e.target.tagName==='BUTTON'||e.target.closest('.game-card')||e.target.closest('.tombstone'))return;
+            const b=document.createElement('div'); b.className='ink-blot';
+            const s=Math.random()*40+10; b.style.width=s+'px'; b.style.height=s+'px';
+            b.style.left=(e.pageX-s/2)+'px'; b.style.top=(e.pageY-s/2)+'px';
+            document.body.appendChild(b); setTimeout(()=>b.remove(),2000);
+        }
+
+        bjReset(); // Init Blackjack
+    </script>
+</body>
+</html>
